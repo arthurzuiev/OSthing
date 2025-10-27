@@ -1,0 +1,1 @@
+C:\desctop_folders\Projects\Perosnal\Baremetal_Eats_MicroPython\hello_uefi\HelloWorldApp\Makefile

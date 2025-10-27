@@ -1,0 +1,13 @@
+C:/desctop_folders/Projects/Perosnal/Baremetal_Eats_MicroPython/hello_uefi/HelloWorldApp/OUTPUT/HelloWorldApp.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/RegisterFilterLibNull/RegisterFilterLibNull/OUTPUT/FilterLibNull.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/BaseMemoryLib/BaseMemoryLib/OUTPUT/BaseMemoryLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/BasePcdLibNull/BasePcdLibNull/OUTPUT/BasePcdLibNull.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/BaseLib/BaseLib/OUTPUT/BaseLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib/OUTPUT/BaseDebugPrintErrorLevelLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/BasePrintLib/BasePrintLib/OUTPUT/BasePrintLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiDebugLibStdErr/UefiDebugLibStdErr/OUTPUT/UefiDebugLibStdErr.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib/OUTPUT/UefiBootServicesTableLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib/OUTPUT/UefiMemoryAllocationLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib/OUTPUT/UefiRuntimeServicesTableLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib/OUTPUT/UefiDevicePathLib.lib
+C:/EDK2/Build/MdeModule/DEBUG_VS2022/X64/MdePkg/Library/UefiLib/UefiLib/OUTPUT/UefiLib.lib

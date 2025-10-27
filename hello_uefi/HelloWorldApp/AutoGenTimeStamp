@@ -1,0 +1,15 @@
+C:\EDK2\MdePkg\Library\UefiDevicePathLib\UefiDevicePathLib.inf
+C:\EDK2\MdePkg\Library\BasePcdLibNull\BasePcdLibNull.inf
+C:\desctop_folders\Projects\Perosnal\Baremetal_Eats_MicroPython\hello_uefi\HelloWorldApp.c
+C:\EDK2\MdePkg\Library\BaseDebugPrintErrorLevelLib\BaseDebugPrintErrorLevelLib.inf
+C:\EDK2\MdePkg\Library\RegisterFilterLibNull\RegisterFilterLibNull.inf
+C:\desctop_folders\Projects\Perosnal\Baremetal_Eats_MicroPython\hello_uefi\HelloWorldApp.inf
+C:\EDK2\MdePkg\Library\BaseLib\BaseLib.inf
+C:\EDK2\MdePkg\Library\UefiLib\UefiLib.inf
+C:\EDK2\MdePkg\Library\UefiRuntimeServicesTableLib\UefiRuntimeServicesTableLib.inf
+C:\EDK2\MdePkg\Library\UefiMemoryAllocationLib\UefiMemoryAllocationLib.inf
+C:\desctop_folders\Projects\Perosnal\Baremetal_Eats_MicroPython\hello_uefi\HelloWorldApp\DEBUG\AutoGen.h
+C:\EDK2\MdePkg\Library\BaseMemoryLib\BaseMemoryLib.inf
+C:\EDK2\MdePkg\Library\UefiBootServicesTableLib\UefiBootServicesTableLib.inf
+C:\EDK2\MdePkg\Library\UefiDebugLibStdErr\UefiDebugLibStdErr.inf
+C:\EDK2\MdePkg\Library\BasePrintLib\BasePrintLib.inf

@@ -3,21 +3,19 @@
         {
             "name": "Win32",
             "includePath": [
-                    "${workspaceFolder}/**",
-                    "${workspaceFolder}/uefi_test/src",
-                    "${workspaceFolder}/edk2/MdePkg/Include",
-                    "${workspaceFolder}/edk2/MdePkg/Include/X64"
+                "${workspaceFolder}/hello_uefi",
+                "C:/EDK2/MdePkg/Include",
+                "C:/EDK2/MdePkg/Include/X64",
+                "C:/EDK2/MdePkg/Include/IndustryStandard"
             ],
             "defines": [
                 "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
+                "EFI32",
+                "EFI_APPLICATION",
+                "UNICODE"
             ],
-            "windowsSdkVersion": "10.0.26100.0",
-            "compilerPath": "C:/msys64/mingw64/bin/x86_64-w64-mingw32-gcc.exe",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "windows-msvc-x64",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.**/bin/Hostx64/x64/cl.exe"
         }
     ],
     "version": 4
