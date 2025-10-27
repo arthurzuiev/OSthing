@@ -3,6 +3,11 @@ REM === Configure EDK2 environment ===
 SET EDK2_ROOT=C:\EDK2
 SET HELLO_DIR=C:\desctop_folders\Projects\Perosnal\Baremetal_Eats_MicroPython\hello_uefi
 
+if not exist "%HELLO_DIR%\HelloWorldApp.inf" (
+    echo Error: HelloWorldApp.inf not found in %HELLO_DIR%
+    exit /b 1
+)
+
 REM Run edksetup to set PATH for this session
 CALL "%EDK2_ROOT%\edksetup.bat" Rebuild
 
