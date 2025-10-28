@@ -63,11 +63,11 @@ start:
     mov es, ax
     mov bx, 0x7E00
     
-    mov ah, 0x02        ; Read sectors
-    mov al, 4           ; 4 sectors (2KB installer)
-    mov ch, 0x00        ; Cylinder 0
-    mov cl, 0x02        ; Sector 2
-    mov dh, 0x00        ; Head 0
+    mov ah, 0x02
+    mov al, 4
+    mov ch, 0x00
+    mov cl, 0x02
+    mov dh, 0x00
     mov dl, [boot_drive]
     
     int 0x13
@@ -134,7 +134,6 @@ halt_forever:
     hlt
     jmp .loop
 
-; Data
 boot_drive  db 0
 msg_kernel  db "UltraOS",0
 msg_check   db "Checking...",0
