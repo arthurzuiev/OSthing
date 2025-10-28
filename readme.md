@@ -1,2 +1,2 @@
-# UAGoose
-Soso: What do i need to do?
+# Requirements
+- Rust
