@@ -132,11 +132,11 @@ halt_forever:
     cli
 .loop:
     hlt
-    jmp .loop
+    jmp .loop ; check discord
 
 boot_drive  db 0
 msg_kernel  db "UltraOS",0
-msg_check   db "Checking...",0
+msg_check   db "Checking...",0 
 msg_disk    db "Disk: ",0
 msg_mem     db "Memory: ",0
 msg_ok      db "[OK]",0
@@ -148,4 +148,4 @@ logo2       db " | | | | | __| '__/ _ \ |  | |\___ \ ",0
 logo3       db " | |_| | | |_| | |  __/ |__| |____) |",0
 
 times 510-($-$$) db 0
-dw 0xAA55
+dw 0xAA55 ; i see you buddy hehehehehehe
