@@ -63,11 +63,11 @@ start:
     mov es, ax
     mov bx, 0x7E00
     
-    mov ah, 0x02        ; Read sectors
-    mov al, 4           ; 4 sectors (2KB installer)
-    mov ch, 0x00        ; Cylinder 0
-    mov cl, 0x02        ; Sector 2
-    mov dh, 0x00        ; Head 0
+    mov ah, 0x02
+    mov al, 4
+    mov ch, 0x00
+    mov cl, 0x02
+    mov dh, 0x00
     mov dl, [boot_drive]
     
     int 0x13
@@ -132,12 +132,11 @@ halt_forever:
     cli
 .loop:
     hlt
-    jmp .loop
+    jmp .loop ; check discord
 
-; Data
 boot_drive  db 0
 msg_kernel  db "UltraOS",0
-msg_check   db "Checking...",0
+msg_check   db "Checking...",0 
 msg_disk    db "Disk: ",0
 msg_mem     db "Memory: ",0
 msg_ok      db "[OK]",0
@@ -149,4 +148,4 @@ logo2       db " | | | | | __| '__/ _ \ |  | |\___ \ ",0
 logo3       db " | |_| | | |_| | |  __/ |__| |____) |",0
 
 times 510-($-$$) db 0
-dw 0xAA55
+dw 0xAA55 ; i see you buddy hehehehehehe
