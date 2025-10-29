@@ -28,16 +28,49 @@ pub enum Color {
     White = 15,
 }
 
+impl From<u8> for Color {
+    fn from(val: u8) -> Color {
+        match val {
+            0 => Color::Black,
+            1 => Color::Blue,
+            2 => Color::Green,
+            3 => Color::Cyan,
+            4 => Color::Red,
+            5 => Color::Magenta,
+            6 => Color::Brown,
+            7 => Color::LightGray,
+            8 => Color::DarkGray,
+            9 => Color::LightBlue,
+            10 => Color::LightGreen,
+            11 => Color::LightCyan,
+            12 => Color::LightRed,
+            13 => Color::Pink,
+            14 => Color::Yellow,
+            15 => Color::White,
+            _ => Color::White, // fallback
+        }
+    }
+}
 
 
 // To represent full color code that specifies foreground and background color we create newtype on top of u8
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)] // ensure exact same data layout as u8
-struct ColorCode(u8);
+pub struct ColorCode(u8);
 
 impl ColorCode {
     fn new(foreground: Color, background: Color) -> ColorCode {
         ColorCode((background as u8) << 4 | (foreground as u8))
+    }
+
+    pub fn foreground(&self) -> Color {
+        // lower 4 bits
+        unsafe { core::mem::transmute(self.0 & 0x0F) }
+    }
+
+    pub fn background(&self) -> Color {
+        // upper 4 bits
+        unsafe { core::mem::transmute(self.0 >> 4) }
     }
 }
 
@@ -124,6 +157,28 @@ impl Writer {
 
         }
     }
+
+    /// Change foreground color, keep background as-is
+    #[allow(dead_code)]
+    pub fn set_foreground(&mut self, fg: Color) {
+        let bg = Color::from(self.color_code.0 >> 4);
+        self.color_code = ColorCode::new(fg, bg);
+    }
+
+    #[allow(dead_code)]
+    pub fn set_background(&mut self, bg: Color) {
+        let fg = Color::from(self.color_code.0 & 0x0F);
+        self.color_code = ColorCode::new(fg, bg);
+    }
+
+    /// Change both foreground and background
+    pub fn set_color(&mut self, fg: Color, bg: Color) {
+        self.color_code = ColorCode::new(fg, bg);
+    }
+
+    pub fn get_color(&self) -> ColorCode {
+        self.color_code
+    }
 }
 
 
@@ -167,4 +222,61 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+// and some custom macros
+
+/// Colorful print. Argument 1: foreground color | Argument 2: background color | Text and other stuff ...
+#[macro_export]
+macro_rules! c_print {
+    ($fg:expr, $bg:expr, $($arg:tt)*) => ({
+        use $crate::vga_buffer::{WRITER};
+        use core::fmt::Write;
+
+        let mut w = WRITER.lock();
+
+        // Save old color
+        let old_color = w.get_color();
+        w.set_color($fg, $bg);
+        write!(w, $($arg)*).unwrap();
+        w.set_color(old_color.foreground(), old_color.background());
+
+    });
+}
+
+#[macro_export]
+macro_rules! c_println {
+    ($fg:expr, $bg:expr, $($arg:tt)*) => ({
+        $crate::c_print!($fg, $bg, "{}\n", format_args!($($arg)*));
+    });
+}
+
+/// Set foreground color globally for all future prints
+#[macro_export]
+macro_rules! set_foreground_color {
+    ($fg:expr) => {{
+        use $crate::vga_buffer::WRITER;
+        let mut w = WRITER.lock();
+        w.set_foreground($fg);
+    }};
+}
+
+/// Set background color globally for all future prints
+#[macro_export]
+macro_rules! set_background_color {
+    ($bg:expr) => {{
+        use $crate::vga_buffer::WRITER;
+        let mut w = WRITER.lock();
+        w.set_background($bg);
+    }};
+}
+
+/// Set both foreground and background color globally
+#[macro_export]
+macro_rules! set_color {
+    ($fg:expr, $bg:expr) => {{
+        use $crate::vga_buffer::WRITER;
+        let mut w = WRITER.lock();
+        w.set_color($fg, $bg);
+    }};
 }

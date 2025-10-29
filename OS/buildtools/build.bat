@@ -1,15 +1,29 @@
 @echo off
+REM Build script for OS project
 
-REM UPDATE 1
-REM compile it for the windows system... but we want freestanfing bin
-REM its just here to show some linker arguymnets :D dont worry abt it and absolutly ignore it
-REM cargo rustc -- -C link-args="/ENTRY:_start /SUBSYSTEM:console"
+REM Default behavior: build only
+set BUILD_ONLY=1
+set CLEAN_BUILD=0
 
-REM UPDATE 2
-REM now most of build info is inside:
-REM ./.cargo/config.toml
-REM ./x86_64-os_target.json
-REM ./Cargo.toml
-REM so this is all we need:
-cargo clean
-cargo build
+set CARGO_MANIFEST_DIR=%CD%\
+
+REM Check arguments
+if "%1"=="-c" (
+    set CLEAN_BUILD=1
+    set BUILD_ONLY=0
+) else if "%1"=="-bo" (
+    set BUILD_ONLY=1
+    set CLEAN_BUILD=0
+)
+
+REM Perform actions
+if %CLEAN_BUILD%==1 (
+    echo [TOOL] Performing clean build...
+    cargo clean
+    cargo build
+) else if %BUILD_ONLY%==1 (
+    echo [TOOL] Performing build only...
+    cargo build
+) else (
+    echo [TOOL] Unknown argument %1. Use -c for clean build, -bo for build only.
+)

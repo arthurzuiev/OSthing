@@ -14,7 +14,7 @@ REM install required python packages
 
 call tools/_formatting/separator.bat
 
-echo [TOOL] Installing required python packages
+echo [TOOL] Ensuring required python packages are installed
 @echo on
 pip install -r tools/requirements.txt
 @echo off
@@ -30,23 +30,49 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM wsl stuff
-call tools\_formatting\warning.bat "Ensuring required dependencies in WSL enviornemnt (wsl may ask for password as it uses sudo commands)"
+echo [TOOL] Checking WSL Dependencies
 
-call tools\_formatting\separator.bat
+REM Check if qemu-system-x86 is installed
+wsl bash -c "dpkg -s qemu-system-x86 >/dev/null 2>&1"
+if %errorlevel% neq 0 (
+    set INSTALL_QEMU=1
+) else (
+    set INSTALL_QEMU=0
+)
 
-echo [TOOL][SUDO COMMAND]
-@echo on
-wsl bash -c "sudo apt update && sudo apt install qemu-system-x86 ovmf -y"
-@echo off
+REM Check if ovmf is installed
+wsl bash -c "dpkg -s ovmf >/dev/null 2>&1"
+if %errorlevel% neq 0 (
+    set INSTALL_OVMF=1
+) else (
+    set INSTALL_OVMF=0
+)
+
+REM Only ask for sudo if either is missing
+if %INSTALL_QEMU%==1 (
+    set INSTALL_ANY=1
+)
+if %INSTALL_OVMF%==1 (
+    set INSTALL_ANY=1
+)
+
+if defined INSTALL_ANY (
+    call tools\_formatting\separator.bat
+    call tools\_formatting\warning.bat "Installing required dependencies in WSL enviornemnt (wsl may ask for password as it uses sudo commands)"
+    @echo on
+    wsl bash -c "sudo apt update && sudo apt install qemu-system-x86 ovmf -y"
+    @echo off
+)
+
+echo [TOOL] WSL Dependencies are Satisfied
 
 REM installing build dependencies for Rust stuff
 
 call tools\_formatting\separator.bat
 
 echo [TOOL] Installing build dependencies for Rust tools
-@echo on
 cd OS
+@echo on
 call .\buildtools\install_deps.bat
-cd ..
 @echo off
+cd ..

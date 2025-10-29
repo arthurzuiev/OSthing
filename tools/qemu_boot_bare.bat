@@ -30,6 +30,6 @@ call tools/install_tool_deps.bat
 call tools\_formatting\separator.bat
 
 REM run qemu with the provided binary
-echo [TOOL] Launching Qemu with the provided binary
+echo [TOOL] Launching Qemu with provided binary
 wsl qemu-system-x86_64 -drive format=raw,file=%BIN_PATH%
 pause
