@@ -1,7 +1,7 @@
 @echo off
 
 REM for python
-echo [TOOL] Installing Tool Dependencies
+echo [TOOL] Ensuring Tool Dependencies
 
 REM ensure python is installed
 where python >nul 2>&1
@@ -31,7 +31,7 @@ if %errorlevel% neq 0 (
 )
 
 REM wsl stuff
-call tools\_formatting\warning.bat "Ensuring required dependencies in WSL enviornemnt (wsk may ask for password as it uses sudo commands)"
+call tools\_formatting\warning.bat "Ensuring required dependencies in WSL enviornemnt (wsl may ask for password as it uses sudo commands)"
 
 call tools\_formatting\separator.bat
 
