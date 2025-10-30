@@ -63,11 +63,13 @@ impl ColorCode {
         ColorCode((background as u8) << 4 | (foreground as u8))
     }
 
+    #[allow(dead_code)]
     pub fn foreground(&self) -> Color {
         // lower 4 bits
         unsafe { core::mem::transmute(self.0 & 0x0F) }
     }
 
+    #[allow(dead_code)]
     pub fn background(&self) -> Color {
         // upper 4 bits
         unsafe { core::mem::transmute(self.0 >> 4) }
@@ -171,11 +173,13 @@ impl Writer {
         self.color_code = ColorCode::new(fg, bg);
     }
 
+    #[allow(dead_code)]
     /// Change both foreground and background
     pub fn set_color(&mut self, fg: Color, bg: Color) {
         self.color_code = ColorCode::new(fg, bg);
     }
 
+    #[allow(dead_code)]
     pub fn get_color(&self) -> ColorCode {
         self.color_code
     }
@@ -279,4 +283,27 @@ macro_rules! set_color {
         let mut w = WRITER.lock();
         w.set_color($fg, $bg);
     }};
+}
+
+// testing stuff =====================================================================================================================================
+#[test_case]
+fn test_println_simple() {
+    println!("test_println_simple output");
+}
+
+#[test_case]
+fn test_println_many() {
+    for _ in 0..200 {
+        println!("test_println_many output");
+    }
+}
+
+#[test_case]
+fn test_println_output() {
+    let s = "Some test string that fits on a single line";
+    println!("{}", s);
+    for (i, c) in s.chars().enumerate() {
+        let screen_char = WRITER.lock().buffer.chars[BUFFER_HEIGHT - 2][i].read();
+        assert_eq!(char::from(screen_char.ascii_character), c);
+    }
 }

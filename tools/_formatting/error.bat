@@ -1,7 +1,4 @@
 @echo off
-REM Enable ANSI escape sequences
-for /f "delims=" %%i in ('echo prompt $E ^| cmd') do set "ESC=%%i"
-
 set errorText=%1
 
 echo:

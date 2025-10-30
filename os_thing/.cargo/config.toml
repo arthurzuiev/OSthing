@@ -1,0 +1,11 @@
+[unstable]
+build-std-features = ["compiler-builtins-mem"]
+build-std = ["core", "compiler_builtins"]
+panic-abort-tests = true
+
+[build]
+target = "x86_64-os_target.json"
+
+[target.'cfg(target_os = "none")']
+runner = "bootimage runner" # well... works only in wsl lol
+

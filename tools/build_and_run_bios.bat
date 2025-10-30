@@ -6,11 +6,31 @@ set CALLER_DIR=%CD%
 echo [TOOL] Build and Run BIOS Bootable Image
 call tools\_formatting\separator.bat
 
+REM Check if -test is passed first
+if "%1"=="-test" (
+    echo [TOOL] Ensuring Build Requirements
+    cd os_thing
+    call buildtools\install_deps.bat
+    cd ..
+    call tools\_formatting\separator.bat
+    echo [TOOL] Running tests via WSL...
+    cd os_thing
+    if "%2"=="-c" (
+        cargo clean
+    )
+    
+    call ..\tools\_formatting\separator.bat
+
+    wsl bash -l -c "cargo test"
+    cd ..
+    exit /b
+)
+
 REM Default behavior: build only
 set BUILD_ONLY=1
 set CLEAN_BUILD=0
 
-REM Check arguments
+REM Check arguments for -c and -bo
 if "%1"=="-c" (
     set CLEAN_BUILD=1
     set BUILD_ONLY=0
@@ -22,7 +42,7 @@ if "%1"=="-c" (
 echo [TOOL] Building...
 
 REM go into Rust template directory
-cd OS
+cd os_thing
 
 REM then we build
 if %CLEAN_BUILD%==1 (
@@ -34,7 +54,8 @@ if %CLEAN_BUILD%==1 (
     call .\buildtools\build.bat -bo
     @echo off
 )
-call buildtools\build_bootable.bat
+
+call .\buildtools\build_bootable.bat
 
 REM go back to project root
 cd ..
@@ -42,13 +63,13 @@ cd ..
 call tools\_formatting\separator.bat
 
 REM === Construct the absolute path to the bootable binary ===
-set RELATIVE_BIN_PATH=.\OS\target\x86_64-os_target\debug\bootimage-OS.bin
+set RELATIVE_BIN_PATH=.\os_thing\target\x86_64-os_target\debug\bootimage-os_thing.bin
 set ABSOLUTE_PATH_TO_BIN=%CALLER_DIR%\%RELATIVE_BIN_PATH%
 
 REM Check if file exists
 if not exist "%ABSOLUTE_PATH_TO_BIN%" (
-    call _formatting\error.bat "Binary not found at %ABSOLUTE_PATH_TO_BIN%"
-    echo Consider checking the relative path set in this .bat file, folder names may have changed | OR build was unsuccessful. | OR you ran this file not from project root, moron.
+    call tools\_formatting\error.bat "Binary not found at %ABSOLUTE_PATH_TO_BIN%"
+    echo Consider checking the relative path set in this .bat file, folder names may have changed ^| OR build was unsuccessful. ^| OR you ran this file not from project root, moron.
     pause
     exit /b 1
 )

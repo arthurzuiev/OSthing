@@ -71,7 +71,7 @@ REM installing build dependencies for Rust stuff
 call tools\_formatting\separator.bat
 
 echo [TOOL] Installing build dependencies for Rust tools
-cd OS
+cd os_thing
 @echo on
 call .\buildtools\install_deps.bat
 @echo off
