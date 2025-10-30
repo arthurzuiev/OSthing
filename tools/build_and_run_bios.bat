@@ -15,12 +15,17 @@ if "%1"=="-test" (
     call tools\_formatting\separator.bat
     echo [TOOL] Running tests via WSL...
     cd os_thing
+
     if "%2"=="-c" (
         cargo clean
+    ) else if not "%2"=="" (
+        REM Run a specific test target
+        wsl bash -l -c "cargo test --test %2"
+        cd ..
+        exit /b
     )
-    
-    call ..\tools\_formatting\separator.bat
 
+    REM Default: run all tests
     wsl bash -l -c "cargo test"
     cd ..
     exit /b

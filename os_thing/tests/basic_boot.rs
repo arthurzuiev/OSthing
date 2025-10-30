@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(os_thing::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
@@ -13,20 +13,19 @@ pub extern "C" fn _start() -> ! {
     loop {}
 }
 
-fn test_runner(tests: &[&dyn Fn()]) {
+#[allow(dead_code)]
+fn test_runner(_tests: &[&dyn Fn()]) {
     unimplemented!();
 }
-
-#![test_runner(os_thing::test_runner)]
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     os_thing::test_panic_handler(info)
 }
 
-use blog_os::println;
+use os_thing::println;
 
 #[test_case]
 fn test_println() {
-    println!("test_println output");
+    println!("test_println output | from basic boot");
 }
