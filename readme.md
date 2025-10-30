@@ -19,7 +19,7 @@ Rust Eats UEFI (REUEFI) is a project on coding an opearting system without too m
 - `install_tool_deps.bat` installs dependencies tools may require. (note: tools call it themselves so no need to bother :D)
 - `qemu_boot_bare.bat` boots your .bin bootable image on bare BIOS system inside QEMU | you may also provide path to .bin as an argument when calling.
 - `build_and_run_bios.bat` it uses `OS\buildtools` to build your project, compile into `.bin` then it calls `qemu_boot_bare.bat` to run it. - cleans and builds project 
-    - optional argument: `-c` , `-bo` OR `-test` | `-c` for clean build (deletes and rebuilds) and `-bo` is build only. DEFAULT: `-bo` , `-test` builds test build
+    - optional argument: `-c` , `-bo` OR `-test` | `-c` for clean build (deletes and rebuilds) and `-bo` is build only. DEFAULT: `-bo` , `-test` builds test build (if first argument is `-test` you can also put `-c` or `<test_target_name>` as second argument.)
 - `_formatting` folder is used by tools to make things pretty
 - `\OS\buildtools` contains convenient tools to build things (WARNING: run them from \OS\ directory because tools want to see the Cargo.toml which exists directly under it)
     - install_deps.bat - installs some extra dependencies... it is ran automatically by tools if they need those.
