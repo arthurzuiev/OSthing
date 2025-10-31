@@ -21,9 +21,6 @@ test = true
 bench = false
 
 [package.metadata.bootimage]
-test-args = [
-    "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio",
-    "-display", "none"
-] # for clean way to exist QEMU while testing test build :D AND for serial output of test result stuff
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"] # for clean way to exist QEMU while testing test build :D AND for serial output of test result stuff
 test-success-exit-code = 33 # our exit code: 33 | cargo's test exit code must be 0... we map it like this so we not get unintended behaviour
 test-timeout = 300 
