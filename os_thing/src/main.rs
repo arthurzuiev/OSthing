@@ -21,12 +21,16 @@ pub extern "C" fn _start() -> ! {
     // So... we extern it as C because BIOS loves C conventions.
     // And it is _start because BIOS loves to start at start.
 
+    // init out stuff
+    os_thing::init(); //for now mostly exeption stuff
+
     c_println!(Color::Magenta, Color::Black, "BIOS Wasteland started growing grass (modules) :D");
     print!("");
 
     //invoke exception
     os_thing::init();
-    x86_64::instructions::interrupts::int3();
+    
+    // trigger a page fault to trigger triple fault :D
 
     c_println!(Color::Green, Color::Black, "I did not crash... yet ^_^");
 
