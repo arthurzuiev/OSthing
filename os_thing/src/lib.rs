@@ -3,11 +3,35 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(abi_x86_interrupt)]
 
+// module use
 use core::panic::PanicInfo;
-// public :D
 pub mod serial;
 pub mod vga_buffer;
+pub mod interrupts;
+
+pub fn init(){
+    interrupts::ini_idt();
+}
+
+// LIB TEST ===============================================================================================================================================
+
+/// Entry point for `cargo test`
+#[cfg(test)]
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
+    init(); // so scary exceptions not eat our OS
+    test_main();
+    loop {}
+}
+//=========================================================================================================================================================
+
+
+
+
+
+// TEST LOGIC ===============================================================================================================================================
 
 // this thing is made so we associate any T with Testable... and we print stuff automatically instead of using print in every test function.
 pub trait Testable {
@@ -41,14 +65,6 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     loop {}
 }
 
-/// Entry point for `cargo test`
-#[cfg(test)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -> ! {
-    test_main();
-    loop {}
-}
-
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
@@ -70,3 +86,5 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         port.write(exit_code as u32);
     }
 }
+
+// =========================================================================================================================================================

@@ -5,23 +5,31 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::{panic::PanicInfo};
-mod vga_buffer;
 mod serial;
+
+use os_thing::print;
+#[allow(dead_code)]
+use os_thing::vga_buffer::Color;
+#[allow(dead_code)]
+use os_thing::{println, set_foreground_color, c_println};
 
 #[cfg(test)]
 use os_thing::test_runner;
-
-#[cfg(not(test))]
-use crate::vga_buffer::Color;
-
 
 #[unsafe(no_mangle)] // For Rust: Don't you dare mangle this name!
 pub extern "C" fn _start() -> ! {
     // So... we extern it as C because BIOS loves C conventions.
     // And it is _start because BIOS loves to start at start.
 
-    println!("BIOS Wasteland is my new home :_)");
-    
+    c_println!(Color::Magenta, Color::Black, "BIOS Wasteland started growing grass (modules) :D");
+    print!("");
+
+    //invoke exception
+    os_thing::init();
+    x86_64::instructions::interrupts::int3();
+
+    c_println!(Color::Green, Color::Black, "I did not crash... yet ^_^");
+
     #[cfg(test)]
     test_main();
     loop {}
