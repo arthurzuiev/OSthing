@@ -26,9 +26,6 @@ pub extern "C" fn _start() -> ! {
 
     c_println!(Color::Magenta, Color::Black, "BIOS Wasteland started growing grass (modules) :D");
     print!("");
-
-    //invoke exception
-    os_thing::init();
     
     // trigger a page fault to trigger triple fault :D
 
