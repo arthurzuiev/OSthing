@@ -45,7 +45,7 @@ $deps = @(
     }
 )
 
-Write-Host "=== Dependency Check ===`n"
+Write-Host "=== Dependency Check ===`n" -ForegroundColor DarkGray
 
 foreach ($dep in $deps) {
     try {
@@ -71,5 +71,5 @@ foreach ($dep in $deps) {
     }
 }
 
-Write-Host "`n=== Done ==="
+Write-Host "`n=== Done ==="  -ForegroundColor DarkGray
 Pause
