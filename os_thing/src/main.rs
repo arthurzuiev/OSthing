@@ -10,8 +10,7 @@ mod serial;
 use os_thing::print;
 #[allow(dead_code)]
 use os_thing::vga_buffer::Color;
-#[allow(dead_code)]
-use os_thing::{init, set_foreground_color, c_println};
+use os_thing::c_println;
 use os_thing::interrupts;
 
 #[cfg(test)]
