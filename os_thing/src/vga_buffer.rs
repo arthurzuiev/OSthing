@@ -2,7 +2,7 @@ use volatile::Volatile;
 use core::fmt;
 use lazy_static::lazy_static;
 use spin::Mutex;
-
+use crate::interrupts::with_interrupts_disabled;
 
 
 // Color Enums
@@ -225,7 +225,10 @@ macro_rules! println {
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
-    WRITER.lock().write_fmt(args).unwrap();
+
+    with_interrupts_disabled(|| {
+        WRITER.lock().write_fmt(args).unwrap();
+    });
 }
 
 // and some custom macros
@@ -234,19 +237,22 @@ pub fn _print(args: fmt::Arguments) {
 #[macro_export]
 macro_rules! c_print {
     ($fg:expr, $bg:expr, $($arg:tt)*) => ({
-        use $crate::vga_buffer::{WRITER};
-        use core::fmt::Write;
+        use $crate::vga_buffer::WRITER;
+        use $crate::interrupts::with_interrupts_disabled;
 
-        let mut w = WRITER.lock();
+        with_interrupts_disabled(|| {
+            let mut w = WRITER.lock();
+            let old_color = w.get_color();
 
-        // Save old color
-        let old_color = w.get_color();
-        w.set_color($fg, $bg);
-        write!(w, $($arg)*).unwrap();
-        w.set_color(old_color.foreground(), old_color.background());
+            w.set_color($fg, $bg);
+            use core::fmt::Write;
+            w.write_fmt(format_args!($($arg)*)).unwrap();
 
+            w.set_color(old_color.foreground(), old_color.background());
+        });
     });
 }
+
 
 #[macro_export]
 macro_rules! c_println {
@@ -260,8 +266,12 @@ macro_rules! c_println {
 macro_rules! set_foreground_color {
     ($fg:expr) => {{
         use $crate::vga_buffer::WRITER;
-        let mut w = WRITER.lock();
-        w.set_foreground($fg);
+        use $crate::interrupts::with_interrupts_disabled;
+
+        with_interrupts_disabled(|| {
+            let mut w = WRITER.lock();
+            w.set_foreground($fg);
+        });
     }};
 }
 
@@ -270,8 +280,12 @@ macro_rules! set_foreground_color {
 macro_rules! set_background_color {
     ($bg:expr) => {{
         use $crate::vga_buffer::WRITER;
-        let mut w = WRITER.lock();
-        w.set_background($bg);
+        use $crate::interrupts::with_interrupts_disabled;
+
+        with_interrupts_disabled(|| {
+            let mut w = WRITER.lock();
+            w.set_background($bg);
+        });
     }};
 }
 
@@ -280,8 +294,40 @@ macro_rules! set_background_color {
 macro_rules! set_color {
     ($fg:expr, $bg:expr) => {{
         use $crate::vga_buffer::WRITER;
-        let mut w = WRITER.lock();
-        w.set_color($fg, $bg);
+        use $crate::interrupts::with_interrupts_disabled;
+
+        with_interrupts_disabled(|| {
+            let mut w = WRITER.lock();
+            w.set_color($fg, $bg);
+        });   
     }};
 }
 
+// TEST STUFF ===============================================================================================================================================
+
+#[test_case]
+fn test_println_simple() {
+    println!("test_println_simple output");
+}
+
+#[test_case]
+fn test_println_many() {
+    for _ in 0..200 {
+        println!("test_println_many output");
+    }
+}
+
+#[test_case]
+fn test_println_output() {
+    let s = "Some test string that fits on a single line";
+    println!("{}", s);
+
+    with_interrupts_disabled(|| {
+        for (i, c) in s.chars().enumerate() {
+        let screen_char = WRITER.lock().buffer.chars[BUFFER_HEIGHT - 2][i].read();
+        assert_eq!(char::from(screen_char.ascii_character), c);
+    }
+    });
+}
+
+//===========================================================================================================================================================

@@ -11,7 +11,8 @@ use os_thing::print;
 #[allow(dead_code)]
 use os_thing::vga_buffer::Color;
 #[allow(dead_code)]
-use os_thing::{println, set_foreground_color, c_println};
+use os_thing::{init, set_foreground_color, c_println};
+use os_thing::interrupts;
 
 #[cfg(test)]
 use os_thing::test_runner;
@@ -33,7 +34,8 @@ pub extern "C" fn _start() -> ! {
 
     #[cfg(test)]
     test_main();
-    loop {}
+
+    os_thing::hlt_loop();
 }
 
 /// manual panic (｡Ó﹏Ò｡)
@@ -41,7 +43,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     c_println!(Color::Red, Color::Black,"{}", info);
-    loop {}
+    os_thing::hlt_loop();
 }
 
 /// test panic (｡Ó﹏Ò｡)

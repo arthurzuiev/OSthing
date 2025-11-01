@@ -15,6 +15,14 @@ pub mod gdt;
 pub fn init(){
     gdt::init();
     interrupts::ini_idt();
+    unsafe { interrupts::PICS.lock().initialize() };
+    x86_64::instructions::interrupts::enable();
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 // LIB TEST ===============================================================================================================================================
@@ -25,11 +33,9 @@ pub fn init(){
 pub extern "C" fn _start() -> ! {
     init(); // so scary exceptions not eat our OS
     test_main();
-    loop {}
+    hlt_loop();
 }
 //=========================================================================================================================================================
-
-
 
 
 
@@ -64,7 +70,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("WHAT THE FUCK DID YOU JUST GIVE ME!? [FAILED]\n");
     serial_println!(">:( Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]
