@@ -10,7 +10,7 @@ mod serial;
 use os_thing::print;
 #[allow(dead_code)]
 use os_thing::vga_buffer::Color;
-use os_thing::c_println;
+use os_thing::{c_println, println};
 use os_thing::interrupts;
 
 #[cfg(test)]
@@ -26,8 +26,17 @@ pub extern "C" fn _start() -> ! {
 
     c_println!(Color::Magenta, Color::Black, "BIOS Wasteland started growing grass (modules) :D");
     print!("");
-    
-    // trigger a page fault to trigger triple fault :D
+
+    let ptr = 0x2031b2 as *mut u8;
+
+    // read from a code page
+    let x;
+    unsafe {  x = *ptr; }
+    println!("read worked {}", x);
+
+    // write to a code page
+    unsafe { *ptr = 42; }
+    println!("write worked");
 
     c_println!(Color::Green, Color::Black, "I did not crash... yet ^_^");
 
