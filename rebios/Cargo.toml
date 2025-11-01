@@ -1,5 +1,5 @@
 [package]
-name = "os_thing"
+name = "rebios"
 version = "0.1.0"
 edition = "2024"
 
@@ -19,7 +19,7 @@ features = ["spin_no_std"]
 
 [[bin]]
 path = "src/main.rs"
-name = "os_thing"
+name = "rebios"
 test = true
 bench = false
 

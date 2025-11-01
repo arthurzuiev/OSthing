@@ -3,15 +3,15 @@
 #![feature(abi_x86_interrupt)]
 
 use core::panic::PanicInfo;
-use os_thing::serial_print;
-use os_thing::{exit_qemu, QemuExitCode, serial_println};
+use rebios::serial_print;
+use rebios::{exit_qemu, QemuExitCode, serial_println};
 use x86_64::structures::idt::InterruptStackFrame;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     serial_print!("stack_overflow::stack_overflow...\t");
 
-    os_thing::gdt::init();
+    rebios::gdt::init();
     init_test_idt();
 
     // trigger a stack overflow
@@ -28,7 +28,7 @@ fn stack_overflow() {
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    os_thing::test_panic_handler(info)
+    rebios::test_panic_handler(info)
 }
 
 use lazy_static::lazy_static;
@@ -40,7 +40,7 @@ lazy_static! {
         unsafe {
             idt.double_fault
                 .set_handler_fn(test_double_fault_handler)
-                .set_stack_index(os_thing::gdt::DOUBLE_FAULT_IST_INDEX);
+                .set_stack_index(rebios::gdt::DOUBLE_FAULT_IST_INDEX);
         }
 
         idt
