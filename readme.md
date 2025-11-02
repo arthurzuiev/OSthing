@@ -1,3 +1,6 @@
+# REBIOS
+REBIOS or REBI OS (Rust Eats BIOS OS)
+
 ## DEV - Requirements
 - [Rust](https://rust-lang.org/tools/install/) (required for the project to work)
 - [MSYS2](https://www.msys2.org/)
