@@ -53,17 +53,18 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
     
-    
+    c_println!(Color::Green, Color::Black, "I did not crash... yet ^_^");
+
     // space for more stuff :D
     let mut executor = Executor::new();
     executor.spawn(Task::new(example_task()));
     executor.spawn(Task::new(keyboard::print_keypresses())); // new
     executor.run();
 
-    
 
-    c_println!(Color::Green, Color::Black, "I did not crash... yet ^_^");
 
+    // in case scarry error happens that will eat my executor...
+    #[allow(unreachable_code)]
     rebios::hlt_loop();
 }
 
