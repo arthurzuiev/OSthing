@@ -5,45 +5,45 @@ use x86_64::{
         FrameAllocator, Mapper, OffsetPageTable, Page, PageTable, PhysFrame, Size4KiB
     }
 };
-use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
+use limine::response::MemoryMapResponse;
+use limine::memory_map::EntryType;
 
-/// A FrameAllocator that returns usable frames from the bootloader's memory map.
+/// A FrameAllocator that returns usable frames from Limine's memory map response.
 pub struct BootInfoFrameAllocator {
-    memory_map: &'static MemoryMap,
+    memory_map: &'static MemoryMapResponse,
     next: usize,
 }
 
 impl BootInfoFrameAllocator {
-    /// Create a FrameAllocator from the passed memory map.
+    /// Create a FrameAllocator from a Limine MemoryMapResponse.
     ///
-    /// This function is unsafe because the caller must guarantee that the passed
-    /// memory map is valid. The main requirement is that all frames that are marked
-    /// as `USABLE` in it are really unused.
-    pub unsafe fn init(memory_map: &'static MemoryMap) -> Self {
+    /// Safety: caller must guarantee that the Limine-provided memory map is valid and
+    /// the entries marked usable are actually free to allocate.
+    pub unsafe fn init(memory_map: &'static MemoryMapResponse) -> Self {
         BootInfoFrameAllocator {
             memory_map,
             next: 0,
         }
     }
 
-    fn usable_frames(&self) -> impl Iterator<Item = PhysFrame> { 
-        // get usable regions from memory map
-        let regions = self.memory_map.iter();
-        let usable_regions = regions.filter(|r| r.region_type == MemoryRegionType::Usable);
-
-        // map each region to its address range
-        let addr_ranges = usable_regions.map(|r| r.range.start_addr()..r.range.end_addr());
-
-        // transform to an iterator of frame start addresses
-        let frame_addresses = addr_ranges.flat_map(|r| r.step_by(4096));
-
-        // create `PhysFrame` types from the start addresses
-        frame_addresses.map(|addr| PhysFrame::containing_address(PhysAddr::new(addr)))
+    fn usable_frames(&self) -> impl Iterator<Item = PhysFrame> + '_ {
+        // entries() -> &[&Entry]
+        self.memory_map.entries().iter()
+            // keep usable and bootloader-reclaimable (common pattern)
+            .filter(|entry| {
+                (entry.entry_type == EntryType::USABLE)
+                || (entry.entry_type == EntryType::BOOTLOADER_RECLAIMABLE)
+            })
+            .flat_map(|entry| {
+                // entry.base and entry.length are u64
+                let start = entry.base as usize;
+                let end = (entry.base + entry.length) as usize;
+                // iterate frame-aligned addresses
+                (start..end).step_by(4096)
+            })
+            .map(|addr| PhysFrame::containing_address(PhysAddr::new(addr as u64)))
     }
 }
-
-/// A FrameAllocator that always returns `None`.
-pub struct EmptyFrameAllocator;
 
 unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
     fn allocate_frame(&mut self) -> Option<PhysFrame> {
@@ -53,6 +53,7 @@ unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
     }
 }
 
+// rest of file unchanged (create_example_mapping, init, active_level_4_table, etc.)
 pub fn create_example_mapping(
     page: Page,
     mapper: &mut OffsetPageTable,
@@ -64,7 +65,6 @@ pub fn create_example_mapping(
     let flags = Flags::PRESENT | Flags::WRITABLE;
 
     let map_to_result = unsafe {
-        //FIXME: this is not safe, we do it only for testing. Guys... where are the nuke codes?
         mapper.map_to(page, frame, flags, frame_allocator)
     };
     map_to_result.expect("map_to failed").flush();
@@ -78,12 +78,6 @@ pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static>
     }
 }
 
-/// Returns a mutable reference to the active level 4 table.
-///
-/// This function is unsafe because the caller must guarantee that the
-/// complete physical memory is mapped to virtual memory at the passed
-/// `physical_memory_offset`. Also, this function must be only called once
-/// to avoid aliasing `&mut` references (which is undefined behavior).
 unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable 
 {
     use x86_64::registers::control::Cr3;
@@ -96,4 +90,3 @@ unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut
 
     unsafe { &mut *page_table_ptr }
 }
-

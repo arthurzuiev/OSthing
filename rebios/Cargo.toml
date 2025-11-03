@@ -1,19 +1,15 @@
-# PACKAGE ==========================================================================================
 [package]
 name = "rebios"
 version = "0.1.0"
 edition = "2024"
-publish = false
 
-[package.metadata.bootimage]
-test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"] # for clean way to exist QEMU while testing test build :D AND for serial output of test result stuff
-test-success-exit-code = 33 # our exit code: 33 | cargo's test exit code must be 0... we map it like this so we not get unintended behaviour
-test-timeout = 300 
-
-# DEPENDENCIES =====================================================================================
 [dependencies]
+<<<<<<< HEAD
 limine = "0.5"
+# bootloader = { version = "0.9", features = ["map_physical_memory"]} # KEEP IT 0.9
+=======
 bootloader = { version = "0.9", features = ["map_physical_memory"]} # KEEP IT 0.9
+>>>>>>> parent of 1b5f354 (half working iso builder. (Progress save))
 volatile = "0.2.6" # KEEP IT 0.2.6
 spin = "0.10.0"  
 x86_64 = "0.14.2"  # KEEP IT 0.14.2
@@ -40,14 +36,21 @@ version = "0.3.4"
 default-features = false
 features = ["alloc"]
 
-# OTHER ============================================================================================
+
 [[bin]]
 path = "src/main.rs"
 name = "rebios"
 test = true
 bench = false
 
-# TEST STUFF========================================================================================
+[package.metadata.bootimage]
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"] # for clean way to exist QEMU while testing test build :D AND for serial output of test result stuff
+test-success-exit-code = 33 # our exit code: 33 | cargo's test exit code must be 0... we map it like this so we not get unintended behaviour
+test-timeout = 300 
+
+
+# TEST STUFF
+
 [[test]]
 name = "stack_overflow"
 harness = false

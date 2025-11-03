@@ -1,2 +1,0 @@
-# Color output in console
-colorama==0.4.6

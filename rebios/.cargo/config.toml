@@ -6,10 +6,5 @@ panic-abort-tests = true
 [build]
 target = "x86_64-os_target.json"
 
-
 [target.'cfg(target_os = "none")']
-runner = "../tools/runner.bat"
-
-
-# [target.'cfg(target_os = "none")']
-# runner = "bootimage runner" 
+runner = "bootimage runner" 

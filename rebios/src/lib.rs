@@ -17,11 +17,24 @@ pub mod task;
 
 extern crate alloc;
 
-#[cfg(test)]
-use bootloader::{entry_point, BootInfo};
+//
+// === Limine requests (used by the kernel on boot) ===
+//
+use limine::request::{MemoryMapRequest, HhdmRequest};
+use limine::BaseRevision;
+/// Tell Limine the protocol revision we require
+pub static BASE_REVISION: BaseRevision = BaseRevision::new();
 
-#[cfg(test)]
-entry_point!(test_kernel_main);
+/// Ask Limine for a memory map (populated before entry)
+#[used]
+pub static MEMORY_MAP_REQUEST: MemoryMapRequest = MemoryMapRequest::new();
+
+/// Ask Limine for the Higher-Half Direct Map (HHDM) offset
+#[used]
+pub static HHDM_REQUEST: HhdmRequest = HhdmRequest::new();
+
+
+
 
 pub fn init(){
     gdt::init();
@@ -40,7 +53,8 @@ pub fn hlt_loop() -> ! {
 
 /// Entry point for `cargo test`
 #[cfg(test)]
-fn test_kernel_main(_boot_info: &'static BootInfo) -> ! {
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
     init(); // so scary exceptions not eat our OS
     test_main();
     hlt_loop();
